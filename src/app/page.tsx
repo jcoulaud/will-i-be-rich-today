@@ -29,14 +29,12 @@ const FortuneTeller = memo(() => {
 
   const handleSubmit = useCallback(async () => {
     if (!newResponse.trim()) {
-      toast.error('Please enter a response');
+      toast.error('Please enter a prediction');
       return;
     }
 
     if (!VALID_INPUT_REGEX.test(newResponse)) {
-      toast.error(
-        'Only letters, numbers, emojis, and basic punctuation (!#%?.,:\'"$_-) are allowed',
-      );
+      toast.error('Only letters, numbers, emojis, and basic punctuation are allowed');
       return;
     }
 
@@ -85,7 +83,7 @@ const FortuneTeller = memo(() => {
     <div className='min-h-screen bg-gradient-to-b from-purple-900 to-black text-white flex flex-col items-center justify-center p-4 text-center'>
       <Toaster position='top-center' />
 
-      <div className='fixed top-4 left-0 right-0 text-center'>
+      <div className='mb-8 md:fixed md:top-10 md:left-0 md:right-0 md:mb-0'>
         <a
           href={`#`}
           target='_blank'
@@ -95,18 +93,18 @@ const FortuneTeller = memo(() => {
         </a>
       </div>
 
-      <div className='mt-20 md:mt-0'>
+      <div className='md:mt-16'>
         <h1 className='text-4xl md:text-5xl font-bold mb-4 animate-bounce'>
           Will I Be Rich Today? 🤑
         </h1>
-
-        <p className='text-lg md:text-xl text-purple-300 mb-8 max-w-2xl mx-auto px-4'>
-          Community-driven fortune teller for memecoin traders. The red predictions you see are all
-          from the community - add yours and see what others think about your future wealth! 🤑
-        </p>
       </div>
 
-      <div className='text-4xl sm:text-5xl md:text-6xl lg:text-9xl font-extrabold mb-2 text-red-500 animate-pulse'>
+      <p className='text-lg md:text-xl text-purple-300 mb-8 max-w-2xl mx-auto px-4'>
+        Community-driven fortune teller for memecoin traders. The red predictions you see are all
+        from the community - add yours and see what others think about your future wealth! 🤑
+      </p>
+
+      <div className='text-5xl md:text-6xl lg:text-9xl font-extrabold mb-2 text-red-500 animate-pulse'>
         {isChangingPrediction ? (
           <div className='animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-purple-500'></div>
         ) : (
