@@ -176,7 +176,7 @@ const FortuneTeller = memo(() => {
           target='_blank'
           rel='noopener noreferrer'
           className='inline-block px-4 py-2 rounded-full border border-purple-400 bg-purple-900/50 text-sm text-purple-200 hover:text-purple-400 hover:border-purple-300 transition-colors backdrop-blur-sm'>
-          CA: {CONTRACT_ADDRESS}
+          {CONTRACT_ADDRESS}
         </a>
       </div>
 
