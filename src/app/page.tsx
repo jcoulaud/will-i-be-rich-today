@@ -74,14 +74,17 @@ const FortuneTeller = memo(() => {
     <div className='min-h-screen bg-gradient-to-b from-purple-900 to-black text-white flex flex-col items-center justify-center p-4 text-center'>
       <Toaster position='top-center' />
 
-      <div className='fixed top-4 left-0 right-0 text-center text-sm text-gray-400 hover:text-purple-400 transition-colors'>
-        CA:{' '}
-        <a href={`#`} target='_blank' rel='noopener noreferrer' className='hover:underline'>
-          {CONTRACT_ADDRESS}
+      <div className='fixed top-4 left-0 right-0 text-center'>
+        <a
+          href={`#`}
+          target='_blank'
+          rel='noopener noreferrer'
+          className='inline-block px-4 py-2 rounded-full border border-purple-400 bg-purple-900/50 text-sm text-purple-200 hover:text-purple-400 hover:border-purple-300 transition-colors backdrop-blur-sm'>
+          CA: {CONTRACT_ADDRESS}
         </a>
       </div>
 
-      <div className='mt-16 md:mt-0'>
+      <div className='mt-20 md:mt-0'>
         <h1 className='text-4xl md:text-5xl font-bold mb-4 animate-bounce'>
           Will I Be Rich Today? 🤑
         </h1>
@@ -92,7 +95,7 @@ const FortuneTeller = memo(() => {
         </p>
       </div>
 
-      <div className='text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-extrabold mb-16 text-red-500 animate-pulse'>
+      <div className='text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-extrabold mb-8 text-red-500 animate-pulse'>
         {currentResponse.text}
       </div>
 
