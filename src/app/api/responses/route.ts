@@ -1,6 +1,11 @@
 import { addResponse as addKVResponse, getAllResponses } from '@/lib/kv';
 import { checkToxicity } from '@/services/perspectiveApi';
 import { FortuneResponse } from '@/types/fortune';
+import {
+  containsBannedWords,
+  containsSpamPatterns,
+  containsSuspiciousPatterns,
+} from '@/utils/contentModeration';
 import { NextResponse } from 'next/server';
 
 const MAX_LENGTH = 42;
@@ -39,6 +44,27 @@ export async function POST(request: Request) {
       );
     }
 
+    // Check for banned words
+    if (containsBannedWords(trimmedText)) {
+      return NextResponse.json(
+        { error: 'Your prediction contains inappropriate language' },
+        { status: 400 },
+      );
+    }
+
+    // Check for spam patterns
+    if (containsSpamPatterns(trimmedText)) {
+      return NextResponse.json({ error: 'Please avoid repetitive content' }, { status: 400 });
+    }
+
+    // Check for suspicious patterns
+    if (containsSuspiciousPatterns(trimmedText)) {
+      return NextResponse.json(
+        { error: 'Your prediction contains suspicious patterns' },
+        { status: 400 },
+      );
+    }
+
     // Check if response already exists
     const existingResponses = await getAllResponses();
     const isDuplicate = existingResponses.some(
@@ -50,17 +76,53 @@ export async function POST(request: Request) {
     }
 
     // Check toxicity before saving
-    try {
-      if (process.env.PERSPECTIVE_API_KEY) {
+    if (process.env.PERSPECTIVE_API_KEY) {
+      try {
         const toxicityCheck = await checkToxicity(trimmedText);
         if (!toxicityCheck.success) {
-          console.error('Toxicity check failed:', toxicityCheck.error);
-          // Continue with the submission even if toxicity check fails
+          return NextResponse.json(
+            { error: toxicityCheck.error || 'Content moderation failed' },
+            { status: 400 },
+          );
         }
+      } catch (error) {
+        console.error('Error during toxicity check:', error);
+        return NextResponse.json({ error: 'Content moderation check failed' }, { status: 400 });
       }
-    } catch (error) {
-      console.error('Error during toxicity check:', error);
-      // Continue with the submission even if toxicity check throws
+    }
+
+    // Additional validation for common patterns of inappropriate content
+    const containsRepeatedPunctuation = /[!?.,]{3,}/.test(trimmedText);
+    const containsAllCaps = /^[A-Z\s!?.,]+$/.test(trimmedText) && trimmedText.length > 10;
+    const containsURLs = /https?:\/\/|www\./i.test(trimmedText);
+    const containsEmailPattern = /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/.test(trimmedText);
+    const containsPhonePattern = /[\d-+()]{10,}/.test(trimmedText);
+    const containsExcessiveSpaces = /\s{3,}/.test(trimmedText);
+
+    if (containsRepeatedPunctuation) {
+      return NextResponse.json({ error: 'Please avoid excessive punctuation' }, { status: 400 });
+    }
+
+    if (containsAllCaps) {
+      return NextResponse.json(
+        { error: 'Please avoid using all capital letters' },
+        { status: 400 },
+      );
+    }
+
+    if (containsURLs) {
+      return NextResponse.json({ error: 'URLs are not allowed in predictions' }, { status: 400 });
+    }
+
+    if (containsEmailPattern || containsPhonePattern) {
+      return NextResponse.json(
+        { error: 'Personal contact information is not allowed' },
+        { status: 400 },
+      );
+    }
+
+    if (containsExcessiveSpaces) {
+      return NextResponse.json({ error: 'Please avoid excessive spacing' }, { status: 400 });
     }
 
     const newResponse: FortuneResponse = {

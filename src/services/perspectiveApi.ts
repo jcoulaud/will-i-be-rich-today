@@ -4,12 +4,12 @@ const PERSPECTIVE_API_URL = 'https://commentanalyzer.googleapis.com/v1alpha1/com
 
 // Adjust these thresholds to make the filter more or less strict
 const CONTENT_THRESHOLDS = {
-  TOXICITY: 0.7, // General toxicity
-  SEVERE_TOXICITY: 0.5, // More severe toxic content
-  PROFANITY: 0.8, // Swear words and profane content
-  SEXUALLY_EXPLICIT: 0.8, // Sexual content
-  THREAT: 0.5, // Threatening content
-  INSULT: 0.7, // Insulting content
+  TOXICITY: 0.5, // Lower from 0.7
+  SEVERE_TOXICITY: 0.3, // Lower from 0.5
+  PROFANITY: 0.5, // Lower from 0.8
+  SEXUALLY_EXPLICIT: 0.5, // Lower from 0.8
+  THREAT: 0.3, // Lower from 0.5
+  INSULT: 0.5, // Lower from 0.7
 } as const;
 
 export const checkToxicity = async (text: string): Promise<PerspectiveResponse> => {
