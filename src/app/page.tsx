@@ -3,17 +3,15 @@
 import { memo, useCallback, useState } from 'react';
 
 const FortuneTeller = memo(() => {
-  const allResponses = [
-    'NO',
-    'Still NO',
-    'Ye... NO',
-    'Nice try, but NO',
-    'Maybe next ti... NO',
-    'Still poor',
-  ];
-
-  // Initialize with NO as first response and rest shuffled
   const initializeResponses = useCallback(() => {
+    const allResponses = [
+      'NO',
+      'Still NO',
+      'Ye... NO',
+      'Nice try, but NO',
+      'Maybe next ti... NO',
+      'Still poor',
+    ];
     const shuffled = [...allResponses.slice(1)].sort(() => Math.random() - 0.5);
     return ['NO', ...shuffled];
   }, []);
