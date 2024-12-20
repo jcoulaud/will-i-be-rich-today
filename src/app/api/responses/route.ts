@@ -50,13 +50,17 @@ export async function POST(request: Request) {
     }
 
     // Check toxicity before saving
-    const toxicityCheck = await checkToxicity(trimmedText);
-
-    if (!toxicityCheck.success) {
-      return NextResponse.json(
-        { error: toxicityCheck.error || 'Failed to check content' },
-        { status: 500 },
-      );
+    try {
+      if (process.env.PERSPECTIVE_API_KEY) {
+        const toxicityCheck = await checkToxicity(trimmedText);
+        if (!toxicityCheck.success) {
+          console.error('Toxicity check failed:', toxicityCheck.error);
+          // Continue with the submission even if toxicity check fails
+        }
+      }
+    } catch (error) {
+      console.error('Error during toxicity check:', error);
+      // Continue with the submission even if toxicity check throws
     }
 
     const newResponse: FortuneResponse = {
