@@ -106,7 +106,6 @@ const BANNED_WORD_COMBINATIONS = [
 // Function to check if text contains any banned words
 export const containsBannedWords = (text: string): boolean => {
   const normalizedText = text.toLowerCase().replace(/\s+/g, '');
-  const words = text.toLowerCase().split(/\s+/);
 
   // Check for exact matches and variations
   if (BANNED_WORDS.some((word) => normalizedText.includes(word.toLowerCase()))) {
