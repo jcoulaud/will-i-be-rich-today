@@ -10,7 +10,7 @@ import { Toaster, toast } from 'react-hot-toast';
 const MAX_LENGTH = 42;
 const MIN_LENGTH = 3;
 const VALID_INPUT_REGEX = /^[\p{L}\p{N}\p{Emoji}\s!#%?.,:'"\-$_]+$/u;
-const CONTRACT_ADDRESS = 'xxxxxxxxxxxxxxxxxxxxx';
+const CONTRACT_ADDRESS = '$RICHTODAY: DwSsNeeqC6Z1813sr78Ht2JozEqgyWSxPrN2QvxApump';
 
 const FortuneTeller = memo(() => {
   const {
