@@ -5,23 +5,28 @@ import './globals.css';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'Will I Be Rich Today? 🤑',
-  description: 'Find out if today is your lucky day...',
+  title: 'Will I Be Rich Today?',
+  description:
+    'Community-driven fortune teller for memecoin traders. Add your own predictions and see what the community thinks about your future wealth! 🤑',
   openGraph: {
-    title: 'Will I Be Rich Today? 🤑',
-    description: 'Find out if today is your lucky day...',
+    title: 'Will I Be Rich Today?',
+    description:
+      'Community-driven fortune teller for memecoin traders. Add your own predictions and see what the community thinks about your future wealth! 🤑',
+    type: 'website',
+    locale: 'en_US',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Will I Be Rich Today? 🤑',
-    description: 'Find out if today is your lucky day...',
+    title: 'Will I Be Rich Today?',
+    description:
+      'Community-driven fortune teller for memecoin traders. Add your own predictions and see what the community thinks about your future wealth! 🤑',
   },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang='en'>
-      <body className={`${inter.className} antialiased`}>{children}</body>
+      <body className={inter.className}>{children}</body>
     </html>
   );
 }
