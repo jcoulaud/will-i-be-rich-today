@@ -19,27 +19,19 @@ export default async function Image() {
           width: '100%',
           height: '100%',
           display: 'flex',
-          flexDirection: 'column',
           alignItems: 'center',
           justifyContent: 'center',
           fontFamily: 'sans-serif',
         }}>
         <div
           style={{
-            fontSize: 80,
+            fontSize: 96,
             fontWeight: 'bold',
             color: 'white',
-            marginBottom: 40,
+            textAlign: 'center',
+            lineHeight: 1.2,
           }}>
           Will I Be Rich Today? 🤑
-        </div>
-        <div
-          style={{
-            fontSize: 120,
-            fontWeight: 'bold',
-            color: '#ef4444',
-          }}>
-          NO
         </div>
       </div>
     ),
