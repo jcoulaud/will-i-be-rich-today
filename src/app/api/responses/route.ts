@@ -3,7 +3,7 @@ import { checkToxicity } from '@/services/perspectiveApi';
 import { FortuneResponse } from '@/types/fortune';
 import { NextResponse } from 'next/server';
 
-const MAX_LENGTH = 30;
+const MAX_LENGTH = 42;
 const VALID_INPUT_REGEX = /^[\p{L}\p{N}\p{Emoji}\s]*$/u;
 
 export async function GET() {

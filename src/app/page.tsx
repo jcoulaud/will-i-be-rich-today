@@ -4,12 +4,13 @@ import { useFortuneResponses } from '@/hooks/useFortuneResponses';
 import { memo, useCallback, useState } from 'react';
 import { Toaster, toast } from 'react-hot-toast';
 
-const MAX_LENGTH = 30;
+const MAX_LENGTH = 42;
 const VALID_INPUT_REGEX = /^[\p{L}\p{N}\p{Emoji}\s]*$/u;
 const CONTRACT_ADDRESS = 'xxxxxxxxxxxxxxxxxxxxx';
 
 const FortuneTeller = memo(() => {
-  const { currentResponse, getNextResponse, isLoading, fetchResponses } = useFortuneResponses();
+  const { currentResponse, getNextResponse, isLoading, fetchResponses, setCurrentResponse } =
+    useFortuneResponses();
   const [newResponse, setNewResponse] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -47,7 +48,8 @@ const FortuneTeller = memo(() => {
       if (data.success) {
         setNewResponse('');
         if (!data.isDuplicate) {
-          await fetchResponses(); // Only refresh if it's a new response
+          setCurrentResponse({ text: newResponse.trim(), createdAt: new Date().toISOString() });
+          await fetchResponses();
         }
         toast.success(
           data.isDuplicate ? 'This response already exists! 🎯' : 'Response added successfully! 🎉',
@@ -60,7 +62,7 @@ const FortuneTeller = memo(() => {
     } finally {
       setIsSubmitting(false);
     }
-  }, [newResponse, fetchResponses]);
+  }, [newResponse, fetchResponses, setCurrentResponse]);
 
   if (isLoading) {
     return (
@@ -90,33 +92,19 @@ const FortuneTeller = memo(() => {
         </h1>
 
         <p className='text-lg md:text-xl text-purple-300 mb-8 max-w-2xl mx-auto px-4'>
-          Community-driven fortune teller for memecoin traders. Add your own predictions and see
-          what the community thinks about your future wealth! 🤑
+          Community-driven fortune teller for memecoin traders. The red predictions you see are all
+          from the community - add yours and see what others think about your future wealth! 🤑
         </p>
       </div>
 
-      <div className='text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-extrabold mb-8 text-red-500 animate-pulse'>
+      <div className='text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-extrabold mb-2 text-red-500 animate-pulse'>
         {currentResponse.text}
-      </div>
-
-      <div className='max-w-md space-y-6 text-lg'>
-        <p className='text-yellow-400'>
-          But hey, I&apos;m sure this next memecoin will be the one!
-        </p>
-
-        <div className='pt-2 text-sm text-gray-400'>
-          <ul className='mt-2 space-y-2'>
-            <li>Find a x30, but round trip a 20% profit 💸</li>
-            <li>Top blast after a green god candle 📉</li>
-            <li>Let&apos;s play this new meta 💨</li>
-          </ul>
-        </div>
       </div>
 
       <button
         className='mt-8 px-6 py-3 bg-purple-600 hover:bg-purple-700 rounded-full transition-all duration-300 transform hover:scale-105'
         onClick={getNextResponse}>
-        Try Again
+        Get another prediction
       </button>
 
       <div className='mt-16 w-full max-w-md mb-12'>
@@ -125,7 +113,7 @@ const FortuneTeller = memo(() => {
             type='text'
             value={newResponse}
             onChange={handleInputChange}
-            placeholder='Add your own response...'
+            placeholder='Add your own prediction...'
             className='w-full px-4 py-2 rounded-lg bg-purple-800 text-white placeholder-purple-300 focus:outline-none focus:ring-2 focus:ring-purple-500'
             maxLength={MAX_LENGTH}
           />
@@ -138,7 +126,7 @@ const FortuneTeller = memo(() => {
           onClick={handleSubmit}
           disabled={isSubmitting}
           className='mt-4 w-full px-6 py-3 bg-purple-600 hover:bg-purple-700 rounded-lg transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed'>
-          {isSubmitting ? 'Adding...' : 'Add Response'}
+          {isSubmitting ? 'Adding...' : 'Add Prediction'}
         </button>
       </div>
     </div>

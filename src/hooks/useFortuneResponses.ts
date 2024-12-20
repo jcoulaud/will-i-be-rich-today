@@ -118,5 +118,6 @@ export const useFortuneResponses = () => {
     responses,
     isLoading,
     fetchResponses,
+    setCurrentResponse,
   };
 };
