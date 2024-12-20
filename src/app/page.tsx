@@ -4,7 +4,7 @@ import { useCountdown } from '@/hooks/useCountdown';
 import { useFortuneResponses } from '@/hooks/useFortuneResponses';
 import { useRateLimit } from '@/hooks/useRateLimit';
 import { debounce } from '@/utils/debounce';
-import { memo, useCallback, useEffect, useState } from 'react';
+import { memo, useCallback, useEffect, useRef, useState } from 'react';
 import { Toaster, toast } from 'react-hot-toast';
 
 const MAX_LENGTH = 42;
@@ -140,18 +140,23 @@ const FortuneTeller = memo(() => {
     lastSubmissionTime,
   ]);
 
-  const debouncedSubmit = useCallback(
+  const debouncedSubmitRef = useRef(
     debounce(() => {
       handleSubmit();
     }, 300),
-    [handleSubmit],
   );
 
   useEffect(() => {
+    debouncedSubmitRef.current = debounce(() => {
+      handleSubmit();
+    }, 300);
+  }, [handleSubmit]);
+
+  useEffect(() => {
     return () => {
-      debouncedSubmit.cancel();
+      debouncedSubmitRef.current.cancel();
     };
-  }, [debouncedSubmit]);
+  }, []);
 
   if (isLoading) {
     return (
@@ -217,7 +222,7 @@ const FortuneTeller = memo(() => {
         </div>
 
         <button
-          onClick={debouncedSubmit}
+          onClick={debouncedSubmitRef.current}
           disabled={isSubmitting || !canMakeAttempt}
           className='mt-4 w-full px-6 py-3 bg-purple-600 hover:bg-purple-700 rounded-lg transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed'>
           {isSubmitting
