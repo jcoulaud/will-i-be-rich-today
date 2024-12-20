@@ -5,12 +5,18 @@ import { memo, useCallback, useState } from 'react';
 import { Toaster, toast } from 'react-hot-toast';
 
 const MAX_LENGTH = 42;
-const VALID_INPUT_REGEX = /^[\p{L}\p{N}\p{Emoji}\s]*$/u;
+const VALID_INPUT_REGEX = /^[\p{L}\p{N}\p{Emoji}\s!#%?.,:'"\-$_]+$/u;
 const CONTRACT_ADDRESS = 'xxxxxxxxxxxxxxxxxxxxx';
 
 const FortuneTeller = memo(() => {
-  const { currentResponse, getNextResponse, isLoading, fetchResponses, setCurrentResponse } =
-    useFortuneResponses();
+  const {
+    currentResponse,
+    getNextResponse,
+    isLoading,
+    fetchResponses,
+    setCurrentResponse,
+    isChangingPrediction,
+  } = useFortuneResponses();
   const [newResponse, setNewResponse] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -28,7 +34,9 @@ const FortuneTeller = memo(() => {
     }
 
     if (!VALID_INPUT_REGEX.test(newResponse)) {
-      toast.error('Only letters, numbers, and emojis are allowed');
+      toast.error(
+        'Only letters, numbers, emojis, and basic punctuation (!#%?.,:\'"$_-) are allowed',
+      );
       return;
     }
 
@@ -48,7 +56,8 @@ const FortuneTeller = memo(() => {
       if (data.success) {
         setNewResponse('');
         if (!data.isDuplicate) {
-          setCurrentResponse({ text: newResponse.trim(), createdAt: new Date().toISOString() });
+          const newPrediction = { text: newResponse.trim(), createdAt: new Date().toISOString() };
+          setCurrentResponse(newPrediction);
           await fetchResponses();
         }
         toast.success(
@@ -97,14 +106,19 @@ const FortuneTeller = memo(() => {
         </p>
       </div>
 
-      <div className='text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-extrabold mb-2 text-red-500 animate-pulse'>
-        {currentResponse.text}
+      <div className='text-4xl sm:text-5xl md:text-6xl lg:text-9xl font-extrabold mb-2 text-red-500 animate-pulse'>
+        {isChangingPrediction ? (
+          <div className='animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-purple-500'></div>
+        ) : (
+          currentResponse.text
+        )}
       </div>
 
       <button
-        className='mt-8 px-6 py-3 bg-purple-600 hover:bg-purple-700 rounded-full transition-all duration-300 transform hover:scale-105'
-        onClick={getNextResponse}>
-        Get another prediction
+        className='mt-12 px-6 py-3 bg-purple-600 hover:bg-purple-700 rounded-full transition-all duration-300 transform hover:scale-105'
+        onClick={getNextResponse}
+        disabled={isChangingPrediction}>
+        {isChangingPrediction ? 'Loading...' : 'Get another prediction'}
       </button>
 
       <div className='mt-16 w-full max-w-md mb-12'>

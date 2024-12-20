@@ -4,7 +4,7 @@ import { FortuneResponse } from '@/types/fortune';
 import { NextResponse } from 'next/server';
 
 const MAX_LENGTH = 42;
-const VALID_INPUT_REGEX = /^[\p{L}\p{N}\p{Emoji}\s]*$/u;
+const VALID_INPUT_REGEX = /^[\p{L}\p{N}\p{Emoji}\s!#%?.,:'"\-$_]+$/u;
 
 export async function GET() {
   try {
@@ -32,7 +32,9 @@ export async function POST(request: Request) {
 
     if (!VALID_INPUT_REGEX.test(trimmedText)) {
       return NextResponse.json(
-        { error: 'Only letters, numbers, and emojis are allowed' },
+        {
+          error: 'Only letters, numbers, emojis, and basic punctuation (!#%?.,:\'"$_-) are allowed',
+        },
         { status: 400 },
       );
     }
